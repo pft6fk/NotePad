@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NotePad</string>
+    <string name="edTitle">Заголовок</string>
+    <string name="edContent">Контент</string>
+</resources>
