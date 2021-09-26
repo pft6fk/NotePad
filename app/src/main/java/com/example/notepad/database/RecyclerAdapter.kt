@@ -61,4 +61,13 @@ class RecyclerAdapter(listMain: ArrayList<ListItem>, contextMain: Context):
         notifyDataSetChanged()
     }
 
+    fun removeItem(pos: Int, dbManager: MyDbManager){
+        //grabs and removes from DB
+        dbManager.removeItemFromDb(listArray[pos].id.toString())
+
+        listArray.removeAt(pos)
+        notifyItemRangeChanged(0, listArray.size)
+        notifyItemRemoved(pos)
+    }
+
 }

@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.notepad.database.MyDbManager
 import com.example.notepad.database.RecyclerAdapter
 import com.example.notepad.databinding.ActivityMainBinding
@@ -49,11 +51,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun fillAdapter(){
-
         adapter.updateAdapter(myDbManager.readDbData())
     }
 
+    //function for swipe & delete
+    private fun getSwapMg(): ItemTouchHelper{
+        return ItemTouchHelper(object: ItemTouchHelper.
+            SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                //removes from recycler view at adapterPosition
+                adapter.removeItem(viewHolder.adapterPosition, myDbManager)
+
+            }
+
+        }
+        )
+    }
+
     private fun init(){
+
+        val swapHelper = getSwapMg()
+        swapHelper.attachToRecyclerView(binding.recyclerView)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
     }
