@@ -60,9 +60,10 @@ class EditActivity : AppCompatActivity() {
 //            binding.imageView.setImageURI(data?.data)
             //перезаписывается переменная чтобы далее внести в БД
             tempImageURI = data?.data.toString()
-            Log.d("my_tag", "error " + tempImageURI)
             binding.imageViewResult.setImageURI(Uri.parse(tempImageURI))
 
+       //next line means for making query with persistable ling for system which provides permanent link
+            contentResolver.takePersistableUriPermission(data?.data!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 //            ContentResolver(this).takePersistableUriPermission(Uri.parse(tempImageURI), intent.flags )
 
 
@@ -77,8 +78,6 @@ class EditActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         //this is for showing all images
         intent.type = "image/*"
-        //next line means for making query for system which provides permanent link
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 //попробовал через resultLauncher но там не выгружало картинку, поэтому пришлось пользоваться ею
         startActivityForResult(intent, imageRequestCode)
 //        resultLauncher.launch(intent, ActivityOptionsCompat.makeBasic())
