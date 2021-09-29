@@ -10,6 +10,7 @@ object MyDbNameClass: BaseColumns {
     const val DATABASE_VERSION = 3
     const val DATABASE_NAME = "MyDb.db"
     const val COLUMN_NAME_IMAGE_URI = "uri"
+    const val COLUMN_NAME_TIME = "time"
 
 
     const val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS $TABLE_NAME"
@@ -18,5 +19,6 @@ object MyDbNameClass: BaseColumns {
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "$COLUMN_TITLE TEXT," +
             "$COLUMN_NAME_CONTENT TEXT," +
+            "$COLUMN_NAME_TIME TEXT," +
             "$COLUMN_NAME_IMAGE_URI TEXT)"
 }

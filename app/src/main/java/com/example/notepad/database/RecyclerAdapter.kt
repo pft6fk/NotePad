@@ -26,6 +26,7 @@ class RecyclerAdapter(listMain: ArrayList<ListItem>, contextMain: Context):
         //получаем все данные в функцию
         fun setData(item: ListItem){
             binding.textTitle.text = item.title
+            binding.time.text = item.time
 
             //click listener чтоб открыть activity при нажатии на
             itemView.setOnClickListener {
@@ -34,6 +35,7 @@ class RecyclerAdapter(listMain: ArrayList<ListItem>, contextMain: Context):
                     putExtra(MyItemConstants.I_TITLE_KEY, item.title)
                     putExtra(MyItemConstants.I_CONTENT_KEY, item.content)
                     putExtra(MyItemConstants.I_URI_KEY, item.uri)
+                    putExtra(MyItemConstants.I_ID_KEY, item.id)
                 }
 
                 context.startActivity(intent)

@@ -3,7 +3,9 @@ package com.example.notepad
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         val view = binding.root
         init()
+        initSearchView()
         myDbManager.openDb()
 
         binding.add.setOnClickListener{
@@ -37,6 +40,20 @@ class MainActivity : AppCompatActivity() {
         startActivity(i)
     }
 
+    fun initSearchView(){
+        binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val list = myDbManager.readDbData(newText!!)
+                adapter.updateAdapter(list)
+                return true
+            }
+
+        })
+    }
 
     override fun onResume() {
         super.onResume()
@@ -50,8 +67,15 @@ class MainActivity : AppCompatActivity() {
         myDbManager.closeDb()
     }
 
-    fun fillAdapter(){
-        adapter.updateAdapter(myDbManager.readDbData())
+    fun fillAdapter() {
+        val list = myDbManager.readDbData("")
+        adapter.updateAdapter(list)
+        if (list.size > 0){
+            binding.text.visibility = View.GONE
+        }
+        else {
+            binding.text.visibility = View.VISIBLE
+        }
     }
 
     //function for swipe & delete
