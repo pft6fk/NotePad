@@ -12,9 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notepad.database.MyDbManager
 import com.example.notepad.database.RecyclerAdapter
 import com.example.notepad.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    var job: Job? = null
     val myDbManager = MyDbManager(this)
     lateinit var binding: ActivityMainBinding
     val adapter = RecyclerAdapter(ArrayList(), this)
@@ -40,15 +45,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    fun initSearchView(){
+    private fun initSearchView(){
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val list = myDbManager.readDbData(newText!!)
-                adapter.updateAdapter(list)
+                fillAdapter(newText!!)
                 return true
             }
 
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         myDbManager.openDb()
         //fills date from DB
-        fillAdapter()
+        fillAdapter("")
     }
 
     override fun onDestroy() {
@@ -67,14 +71,20 @@ class MainActivity : AppCompatActivity() {
         myDbManager.closeDb()
     }
 
-    fun fillAdapter() {
-        val list = myDbManager.readDbData("")
-        adapter.updateAdapter(list)
-        if (list.size > 0){
-            binding.text.visibility = View.GONE
-        }
-        else {
-            binding.text.visibility = View.VISIBLE
+    private fun fillAdapter(text: String) {
+        //it will stop searching if job is NOT null(i.e. if user starts to search new text, it will stop
+        //searching old one and will search new)
+        job?.cancel()
+        //if it is null, it will start searching text
+        job = CoroutineScope(Dispatchers.Main).launch{
+            val list = myDbManager.readDbData(text)
+            adapter.updateAdapter(list)
+            if (list.size > 0){
+                binding.text.visibility = View.GONE
+            }
+            else {
+                binding.text.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -101,7 +111,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init(){
-
         val swapHelper = getSwapMg()
         swapHelper.attachToRecyclerView(binding.recyclerView)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)

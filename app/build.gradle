@@ -49,5 +49,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //for easy permissions
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
 
 }

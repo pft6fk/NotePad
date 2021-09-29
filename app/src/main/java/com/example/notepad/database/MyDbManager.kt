@@ -4,6 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class MyDbManager(context: Context) {
     val myDbHelper = MyDbHelper(context)
@@ -53,7 +57,8 @@ class MyDbManager(context: Context) {
         myDbHelper.close()
     }
 
-    fun readDbData(searchText: String) : ArrayList<ListItem>{
+    //suspend is for Coroutines, withContext (IO) means that it will wait till the IO will end and then will work
+    suspend fun readDbData(searchText: String) : ArrayList<ListItem> = withContext(Dispatchers.IO){
         val dataList = ArrayList<ListItem>()
         val selection = "${MyDbNameClass.COLUMN_TITLE} like ?"
         val cursor = db?.query(
@@ -88,6 +93,7 @@ class MyDbManager(context: Context) {
 
         //do not forget close the cursor!
         cursor.close()
-        return dataList
+        //withContext is because we are using withContext
+        return@withContext dataList
     }
 }
